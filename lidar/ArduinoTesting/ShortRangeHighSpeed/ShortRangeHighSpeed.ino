@@ -29,8 +29,7 @@
 
 LIDARLite myLidarLite;
 
-void setup()
-{
+void setup() {
   Serial.begin(115200); // Initialize serial connection to display distance readings
 
   /*
@@ -50,10 +49,9 @@ void setup()
 
   /*
     Write
-
-    Perform I2C write to device.
-
-    Parameters
+     Perform I2C write to device.
+     
+     Parameters
     ----------------------------------------------------------------------------
     myAddress: register address to write to.
     myValue: value to write.
@@ -63,18 +61,98 @@ void setup()
   myLidarLite.write(0x02, 0x0d); // Maximum acquisition count of 0x0d. (default is 0x80)
   myLidarLite.write(0x04, 0b00000100); // Use non-default reference acquisition count
   myLidarLite.write(0x12, 0x03); // Reference acquisition count of 3 (default is 5)
+
+  Serial.println("After each test, wait for 1s before starting next test.");  // can be changed by modifying delay(1000) at the end of loop() function
+  Serial.println("First measurement done with receiver bias correction, all 99 others with out receiver bias correction.\n\n");
 }
-
-void loop()
-{
+  
+void loop() {
+  // for testing the elapsed times for taking measurements
+  long measureCount = 100;
+  long measureTimes[measureCount]; 
   // Take a measurement with receiver bias correction and print to serial terminal
-  Serial.println(distanceFast(true));
+//   Serial.println(distanceFast(true));
 
+  long startTest = micros();
+  long startTime = micros(); // returns number of ms since arduino starts program loop, overflows after ~70min
+  distanceFast(true); // no need to store value for the purpose of this test
+  long endTime = micros();
+
+  
+  measureTimes[0] = endTime - startTime; // in micro seconds
+    
   // Take 99 measurements without receiver bias correction and print to serial terminal
-  for(int i = 0; i < 99; i++)
-  {
-    Serial.println(distanceFast(false));
+  for (int i = 1; i < measureCount; i++) {
+//    Serial.println(distanceFast(false));
+      startTime = micros();
+      distanceFast(false);
+      endTime = micros();
+      measureTimes[i] = endTime - startTime;
   }
+  long endTest = micros();
+  long testDuration = endTest - startTest;
+
+  // find max, min, avg
+  long sum = 0;
+  double max = measureTimes[0];
+  double min = max;
+
+  for (int i = 0; i < measureCount; i++) {
+    sum += measureTimes[i];
+
+    if (measureTimes[i] > max) {
+      max = measureTimes[i];
+    }
+
+    if (measureTimes[i] < min) {
+      min = measureTimes[i];
+    }
+  }
+
+  double avg = (sum/measureCount);
+  double duration = endTest - startTest;
+  
+  String countStr = "Measurement times for last ";
+  countStr.concat(measureCount);
+  countStr += " measurements.";
+  String minStr = "min = ";
+  minStr.concat(min);
+  minStr += " micro-seconds, ";
+  min = min/1000.;
+  minStr.concat(min);
+  minStr += " milli-seconds";
+  String maxStr = "max = ";
+  maxStr.concat(max);
+  maxStr += " micro-seconds, ";
+  max = max/1000.;
+  maxStr.concat(max);
+  maxStr += " milli-seconds";
+  String avgStr = "avg = ";
+  avgStr.concat(avg);
+  avg = avg/1000.;
+  avgStr += " micro-seconds, ";
+  avgStr.concat(avg);
+  avgStr += " milli-seconds";
+  String durationStr = "Done in ";
+  durationStr.concat(duration);
+  durationStr += " micro-seconds, ";
+  duration = duration/1000.;
+  durationStr.concat(duration);
+  durationStr += " milli-seconds, ";
+  duration = duration/1000.;
+  durationStr.concat(duration);
+  durationStr += " seconds";
+  String line = "-------------------------------------------------------------\n";
+
+  Serial.println(countStr);
+  Serial.println(minStr);
+  Serial.println(maxStr);
+  Serial.println(avgStr);
+  Serial.println(durationStr);
+  Serial.println(line);
+  
+  
+  delay(1000);
 }
 
 // Read distance. The approach is to poll the status register until the device goes

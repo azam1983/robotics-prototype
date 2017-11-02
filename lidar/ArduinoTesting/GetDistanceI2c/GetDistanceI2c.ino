@@ -67,6 +67,9 @@ void setup()
       operating manual for instructions.
   */
   myLidarLite.configure(0); // Change this number to try out alternate configurations
+
+  Serial.println("After each test, wait for 1s before starting next test."); // can be changed by modifying delay(1000) at the end of loop() function
+  Serial.println("First measurement done with receiver bias correction, all other 99 with out receiver bias correction.\n\n");
 }
 
 void loop()
@@ -86,12 +89,87 @@ void loop()
       operating manual for instructions.
   */
 
-  // Take a measurement with receiver bias correction and print to serial terminal
-  Serial.println(myLidarLite.distance());
 
+  long measureCount = 100;
+  long measureTimes[measureCount];
+  long startTest = micros();
+  long startTime = micros(); // returns number of ms since arduino starts program loop, overflows after ~70min
+  myLidarLite.distance();
+  long endTime = micros();
+  
+  measureTimes[0] = endTime - startTime; // in micro seconds
+  
+  myLidarLite.distance();
+  
+  
   // Take 99 measurements without receiver bias correction and print to serial terminal
-  for(int i = 0; i < 99; i++)
-  {
-    Serial.println(myLidarLite.distance(false));
+  for (int i = 1; i < measureCount; i++) {
+    startTime = micros();
+    myLidarLite.distance();
+    endTime = micros();
+    measureTimes[i] = endTime - startTime;
   }
+  long endTest = micros();
+
+  // find max, min, avg
+  long sum = 0;
+  double max = measureTimes[0];
+  double min = max;
+
+  for (int i = 0; i < measureCount; i++) {
+    sum += measureTimes[i];
+
+    if (measureTimes[i] > max) {
+      max = measureTimes[i];
+    }
+
+    if (measureTimes[i] < min) {
+      min = measureTimes[i];
+    }
+  }
+
+  double avg = (sum/measureCount);
+  double duration = endTest - startTest;
+  
+  String countStr = "Measurement times for last ";
+  countStr.concat(measureCount);
+  countStr += " measurements.";
+  String minStr = "min = ";
+  minStr.concat(min);
+  minStr += " micro-seconds, ";
+  min = min/1000.;
+  minStr.concat(min);
+  minStr += " milli-seconds";
+  String maxStr = "max = ";
+  maxStr.concat(max);
+  maxStr += " micro-seconds, ";
+  max = max/1000.;
+  maxStr.concat(max);
+  maxStr += " milli-seconds";
+  String avgStr = "avg = ";
+  avgStr.concat(avg);
+  avg = avg/1000.;
+  avgStr += " micro-seconds, ";
+  avgStr.concat(avg);
+  avgStr += " milli-seconds";
+  String durationStr = "Done in ";
+  durationStr.concat(duration);
+  durationStr += " micro-seconds, ";
+  duration = duration/1000.;
+  durationStr.concat(duration);
+  durationStr += " milli-seconds, ";
+  duration = duration/1000.;
+  durationStr.concat(duration);
+  durationStr += " seconds";
+  String line = "-------------------------------------------------------------\n";
+
+  Serial.println(countStr);
+  Serial.println(minStr);
+  Serial.println(maxStr);
+  Serial.println(avgStr);
+  Serial.println(durationStr);
+  Serial.println(line);
+  
+  
+  delay(1000);
 }
