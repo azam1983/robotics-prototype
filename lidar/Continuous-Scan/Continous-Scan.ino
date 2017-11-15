@@ -4,18 +4,26 @@
 // in branch aa-software2112-patch-1, in the folder robotics-rover/roboticsrov/ucode
 void setup () {
     Serial.begin(9600);
-
-    boolean readyReceived = false;
-
-    // based of arduino_ready function in ArduinoControlRev2.py
-    // which seems to wait for an "r" from the arduino to start.
-    while (!readyReceived) {
-        Serial.println("r");
-
-        //TODO: if handshake received, set readyReceived = true
-    }
 }
 
 void loop () {
-    // do the thing
+    int incomingByte = 0;
+
+    // based off lines 15-19 in Radar.py, and scan, write_then_read functions
+    if (Serial.available() > 0) {
+        incomingByte = Serial.read();
+
+        switch (incomingByte) {
+        case 'd':
+            Serial.println("returning distance");
+        case 'x':
+            Serial.println("rotating x servo");
+        case 'y':
+            Serial.println("rotating y servo");
+        case 'r':
+            Serial.println("resetting variables");
+        case 'c':
+            Serial.println("centering servos");
+        }
+    }
 }
