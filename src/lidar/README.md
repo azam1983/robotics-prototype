@@ -1,13 +1,7 @@
 ## lidar
-
-### Current Tasks (phase 3)
-
-Sprint 1:
-~~- Get basic measurements out of LIDAR (using Arduino)~~
-- Assess accuracy of LIDAR readings compared to expected accuracy 
-
-Sprint 2:
-- Test processing measurement data using last years code/approach, integrate functioning version into new code base
+`Continous-Scan.ino` is an attempt to reverse-engineer the missing Arduino sketch that was working with last year's team's lidar code.
+You can run `sudo python ArduinoSpeaker.py` in the `init-arm-comms` branch in the `communications` 
+while running `sudo python ArduinoListener.py` to observe a test of the interaction.
 
 ## How to connect lidar module to odroid (no servos involved)
 
