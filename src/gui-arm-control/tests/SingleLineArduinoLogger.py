@@ -19,8 +19,8 @@ print("Connecting to com port: " + firstPortName)
 ser = serial.Serial("/dev/" + firstPortName, 9600)
 print("Connected to Port: " + firstPortName)
 
-f = open('test.txt','w+')
-f.write('fluff')
+f = open("test.txt","w+")
+f.write("fluff")
 
 # ctrl + c to stop infinite loop
 #try catch block allows for a more graceful exit of our while loop.
@@ -34,7 +34,7 @@ try:
 		print(readData)
 		#f.write(readData)
 		lines[0] = readData
-		
+
 		with open("test.txt", "w") as f:
 			f.writelines(lines)
 

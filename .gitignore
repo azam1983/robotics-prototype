@@ -1,2 +1,7 @@
 .DS_Store
 node_modules
+robotics-prototype.iml
+.idea/
+src/communication/tests/ArduinoListener/Python_Log.dat
+src/communication/tests/Python_Log.dat
+src/gui-arm-control/tests/test.txt
