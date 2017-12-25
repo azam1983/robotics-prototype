@@ -9,10 +9,14 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject
 import os
+import subprocess
+import commands
 
 class ArduinoSerialReceiver(Gtk.Window):
 	def __init__(self):
 		Gtk.Window.__init__(self, title="Arduino Serial Output Receiver Demo")
+
+		self.arduinoLoggerOn = False # initial assumption
 
 		# creates a box container in which you can add widgets (such as buttons, labels, etc.)
 		self.box = Gtk.Box(spacing=6)
@@ -25,9 +29,13 @@ class ArduinoSerialReceiver(Gtk.Window):
 			self.file.close();
 			self.file = open("test.txt", "r+")
 
-		self.button1 = Gtk.Button(label="Quit")
-		self.button1.connect("clicked", self.terminate)
-		self.box.pack_start(self.button1, True, True, 0)
+		self.gracefulExitBtn = Gtk.Button(label="Graceful Exit")
+		self.gracefulExitBtn.connect("clicked", self.terminate)
+		self.box.pack_start(self.gracefulExitBtn, True, True, 0)
+
+		self.startLoggerBtn = Gtk.Button(label="Start logging Arduino Output")
+		self.startLoggerBtn.connect("clicked", self.start_logging)
+		self.box.pack_start(self.startLoggerBtn, True, True, 0)
 
 		self.label1 = Gtk.Label(label="Wait for it...")
 		self.box.pack_start(self.label1, True, True, 0)
@@ -48,9 +56,31 @@ class ArduinoSerialReceiver(Gtk.Window):
 
 		return True
 
+	# ideally, we want this logging process to begin as soon as the GUI is started
+	# (IOW as soon as the connection to the arm is established, on startup)
+	def start_logging(self, widget):
+		# check if it is currentlyrunning
+		result = commands.getstatusoutput('pgrep -f SingleLineArduinoLogger.py')
+
+		if "\\n" in str(result): # strange but if contains "\n" in string, i.e. 2 pids, then it is already running 
+			print("SingleLineArduinoLogger.py running")
+			self.arduinoLoggerOn = True
+		else:
+			self.arduinoLoggerOn = False
+
+		if self.arduinoLoggerOn == False:
+			subprocess.Popen(["python", "SingleLineArduinoLogger.py"])
+			self.arduinoLoggerOn = True
+
 	# slightly more graceful exit than default top right corner x button
+	# can I map this to the right corner x button?
 	def terminate(self, widget):
-		self.file.close() # mainly because of this
+		self.file.close()
+
+		if self.arduinoLoggerOn == True:
+			print("Terminating SingleLineArduinoLogger.py process")
+			bashCommand = "pkill -9 -f SingleLineArduinoLogger.py"
+			output = subprocess.check_output(['bash','-c', bashCommand])
 		Gtk.main_quit()
 
 window = ArduinoSerialReceiver()
