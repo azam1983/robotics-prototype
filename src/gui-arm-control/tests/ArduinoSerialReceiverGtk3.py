@@ -3,6 +3,7 @@
 To witness the full effect of this test, make sure that you have an arduino connected via USB to your computer
 which is outputting periodically via Serial.println statements and make sure to also run SingleLineArduinoLogger.py in the background
 The ArduinoTester.py sketch was used with this example. This program also currently assumes that the log file is named "test.txt"
+To demo this program upload the ArduinoTester.ino sketch in this directory to your Arduino
 '''
 
 import gi
