@@ -1,4 +1,6 @@
 # This uses Gtk 3, so make sure that is installed before proceeding.
+# To simply test displaying angle values, upload MotorTableSerialTest/MotorTableSerialTest.ino to your Arduino board
+# and run this program while the Arduino is the only connected USB device
 import gi
 import datetime
 import random
@@ -37,29 +39,65 @@ def arduinoConnectionSetup():
 		global ser
 		ser = serial.Serial("/dev/" + firstPortName, 9600)
 		print("Connecting to com port: " + firstPortName) # if connect print success, else fail message
-		GObject.timeout_add(1000, updateAngleValues)
+		GObject.timeout_add(1000, updateMotorTableValues)
 	else:
 		setAllAngleValues("-")
+		setAllCurrentValues("-")
+		setAllStatusValues("-")
 
-def updateAngleValues():
-	readVal = ser.readline().strip()
-	#TODO: process the string and split it up
+def updateMotorTableValues():
+	columns = ser.readline().split(";")
 
-	text_buffer = smotor1.get_buffer()
-	text_buffer.set_text(readVal)
-	text_buffer = smotor2.get_buffer()
-	text_buffer.set_text(readVal)
-	text_buffer = smotor3.get_buffer()
-	text_buffer.set_text(readVal)
-	text_buffer = smotor4.get_buffer()
-	text_buffer.set_text(readVal)
-	text_buffer = asmotor1.get_buffer()
-	text_buffer.set_text(readVal)
-	text_buffer = asmotor2.get_buffer()
-	text_buffer.set_text(readVal)
+	if columns:
+		status   = columns[0].split(",")
+		angles   = columns[1].split(",")
+		currents = columns[2].split(",")
+
+	if status:
+		text_buffer = motorStatus1.get_buffer()
+		text_buffer.set_text(status[0].strip())
+		text_buffer = motorStatus2.get_buffer()
+		text_buffer.set_text(status[1].strip())
+		text_buffer = motorStatus3.get_buffer()
+		text_buffer.set_text(status[2].strip())
+		text_buffer = motorStatus4.get_buffer()
+		text_buffer.set_text(status[3].strip())
+		text_buffer = motorStatus5.get_buffer()
+		text_buffer.set_text(status[4].strip())
+		text_buffer = motorStatus6.get_buffer()
+		text_buffer.set_text(status[5].strip())
+
+	if angles:
+		text_buffer = smotor1.get_buffer()
+		text_buffer.set_text(angles[0].strip())
+		text_buffer = smotor2.get_buffer()
+		text_buffer.set_text(angles[1].strip())
+		text_buffer = smotor3.get_buffer()
+		text_buffer.set_text(angles[2].strip())
+		text_buffer = smotor4.get_buffer()
+		text_buffer.set_text(angles[3].strip())
+		text_buffer = asmotor1.get_buffer()
+		text_buffer.set_text(angles[4].strip())
+		text_buffer = asmotor2.get_buffer()
+		text_buffer.set_text(angles[5].strip())
+
+	if currents:
+		text_buffer = motorCurrent1.get_buffer()
+		text_buffer.set_text(currents[0].strip())
+		text_buffer = motorCurrent2.get_buffer()
+		text_buffer.set_text(currents[1].strip())
+		text_buffer = motorCurrent3.get_buffer()
+		text_buffer.set_text(currents[2].strip())
+		text_buffer = motorCurrent4.get_buffer()
+		text_buffer.set_text(currents[3].strip())
+		text_buffer = motorCurrent5.get_buffer()
+		text_buffer.set_text(currents[4].strip())
+		text_buffer = motorCurrent6.get_buffer()
+		text_buffer.set_text(currents[5].strip())
 
 	return True # necessary so that timeout_add function actually keeps repeating updateAngleValues() call
 
+# helper functions
 def setAllAngleValues(text):
 	text_buffer = smotor1.get_buffer()
 	text_buffer.set_text(text)
@@ -72,6 +110,34 @@ def setAllAngleValues(text):
 	text_buffer = asmotor1.get_buffer()
 	text_buffer.set_text(text)
 	text_buffer = asmotor2.get_buffer()
+	text_buffer.set_text(text)
+
+def setAllCurrentValues(text):
+	text_buffer = motorCurrent1.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorCurrent2.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorCurrent3.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorCurrent4.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorCurrent5.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorCurrent6.get_buffer()
+	text_buffer.set_text(text)
+
+def setAllStatusValues(text):
+	text_buffer = motorStatus1.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorStatus2.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorStatus3.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorStatus4.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorStatus5.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = motorStatus6.get_buffer()
 	text_buffer.set_text(text)
 
 
@@ -477,12 +543,25 @@ textarea = builder.get_object("Error Log ")
 textinput = open("ErrorLogTest.txt", "r")
 
 #Get a reference to motor table text boxes
+motorStatus1 = builder.get_object("Stepper Motor 1 Status")
+motorStatus2 = builder.get_object("Stepper Motor 2 Status")
+motorStatus3 = builder.get_object("Stepper Motor 3 Status")
+motorStatus4 = builder.get_object("Stepper Motor 4 Status")
+motorStatus5 = builder.get_object("Arm Servo Motor 1 Status")
+motorStatus6 = builder.get_object("Arm Servo Motor 2 Status")
 smotor1 = builder.get_object("Stepper Motor 1 Angle")
 smotor2 = builder.get_object("Stepper Motor 2 Angle")
 smotor3 = builder.get_object("Stepper Motor 3 Angle")
 smotor4 = builder.get_object("Stepper Motor 4 Angle")
 asmotor1 = builder.get_object("Arm Servo Motor 1 Angle")
 asmotor2 = builder.get_object("Arm Servo Motor 2 Angle")
+motorCurrent1 = builder.get_object("Stepper Motor 1 Current")
+motorCurrent2 = builder.get_object("Stepper Motor 2 Current")
+motorCurrent3 = builder.get_object("Stepper Motor 3 Current")
+motorCurrent4 = builder.get_object("Stepper Motor 4 Current")
+motorCurrent5 = builder.get_object("Arm Servo Motor 1 Current")
+motorCurrent6 = builder.get_object("Arm Servo Motor 2 Current")
+
 
 #Get reference to button so we can update the label when switched to manual
 switch = builder.get_object("man-auto-switch")
