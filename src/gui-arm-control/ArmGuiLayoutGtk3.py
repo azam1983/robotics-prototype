@@ -2,9 +2,11 @@
 import gi
 import datetime
 import random
+import serial
+import serial.tools.list_ports
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 
 '''
 This will access and run the glade file
@@ -25,15 +27,63 @@ context.add_provider_for_screen(screen, css_provider,
 Gtk.STYLE_PROVIDER_PRIORITY_USER)
 # End of CSS
 
+ser = None # initialize global variable for serial reader
+
+def arduinoConnectionSetup():
+	ports = list(serial.tools.list_ports.comports())
+
+	if ports:
+		firstPortName = ports[0].name
+		global ser
+		ser = serial.Serial("/dev/" + firstPortName, 9600)
+		print("Connecting to com port: " + firstPortName) # if connect print success, else fail message
+		GObject.timeout_add(1000, updateAngleValues)
+	else:
+		setAllAngleValues("-")
+
+def updateAngleValues():
+	readVal = ser.readline().strip()
+	#TODO: process the string and split it up
+
+	text_buffer = smotor1.get_buffer()
+	text_buffer.set_text(readVal)
+	text_buffer = smotor2.get_buffer()
+	text_buffer.set_text(readVal)
+	text_buffer = smotor3.get_buffer()
+	text_buffer.set_text(readVal)
+	text_buffer = smotor4.get_buffer()
+	text_buffer.set_text(readVal)
+	text_buffer = asmotor1.get_buffer()
+	text_buffer.set_text(readVal)
+	text_buffer = asmotor2.get_buffer()
+	text_buffer.set_text(readVal)
+
+	return True # necessary so that timeout_add function actually keeps repeating updateAngleValues() call
+
+def setAllAngleValues(text):
+	text_buffer = smotor1.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = smotor2.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = smotor3.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = smotor4.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = asmotor1.get_buffer()
+	text_buffer.set_text(text)
+	text_buffer = asmotor2.get_buffer()
+	text_buffer.set_text(text)
+
+
 # Test button for error log. Will remove once error log can
 # read errors from other windows
 def testButton(button):
-    textbuffer = textarea.get_buffer()
-    textbuffer.set_text(textinput.read())
+	textbuffer = textarea.get_buffer()
+	textbuffer.set_text(textinput.read())
 
 #def clearButton(button):
     #textbuffer = textarea.get_buffer()
-    
+
 # // definitions of the handlers for the buttons
 def yawLeftButtonClick(button):
     if switch:
@@ -464,6 +514,7 @@ handlers = {
 builder.connect_signals(handlers)
 
 window = builder.get_object("ArmGuiLayoutWindow")
+window.maximize() # won't work for some reason
 window.set_title("Space Concordia Robtotics GUI")
 window.connect("destroy", Gtk.main_quit)
 window.show_all()
@@ -471,5 +522,6 @@ window.show_all()
 # Need to close file, but program won't run if I include it
 # textinput.close()
 if __name__ == "__main__":
-    toggleBtnTest()
-    Gtk.main()
+	toggleBtnTest() # populate motor table values ahead of time
+	arduinoConnectionSetup() # establish USB arduino connection
+	Gtk.main()
