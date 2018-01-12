@@ -10,14 +10,14 @@
 #include <Servo.h>
 
 // Create motorshield class objects
-Adafruit_MotorShield motorShield1 = Adafruit_MotorShield(0x61); // Creates class for first shield with address 61. Hardware must be set to this address
-Adafruit_MotorShield motorShield2 = Adafruit_MotorShield(0x62); // Creates class for second shield with address 62. Hardware must be set to this address
+//Adafruit_MotorShield motorShield1 = Adafruit_MotorShield(0x61); // Creates class for first shield with address 61. Hardware must be set to this address
+//Adafruit_MotorShield motorShield2 = Adafruit_MotorShield(0x62); // Creates class for second shield with address 62. Hardware must be set to this address
 
 // Connect stepper motors to shields
-Adafruit_StepperMotor *motor1 = motorShield2.getStepper(200, 1); // Connects the first motor to the second shield
-Adafruit_DCMotor *motor2 = motorShield1.getMotor(2); // Connects the second motor to the first shield
-Adafruit_StepperMotor *motor3 = motorShield1.getStepper(200, 1); // Connects the third motor to the first shield
-Adafruit_StepperMotor *motor4 = motorShield2.getStepper(200, 2); // Connects the fourth motor to the first shield
+//Adafruit_StepperMotor *motor1 = motorShield2.getStepper(200, 1); // Connects the first motor to the second shield
+//Adafruit_DCMotor *motor2 = motorShield1.getMotor(2); // Connects the second motor to the first shield
+//Adafruit_StepperMotor *motor3 = motorShield1.getStepper(200, 1); // Connects the third motor to the first shield
+//Adafruit_StepperMotor *motor4 = motorShield2.getStepper(200, 2); // Connects the fourth motor to the first shield
 
 // Stepper motor objects
 Servo motor5;
@@ -32,10 +32,12 @@ unsigned long lastTime;
 double output;
 double integralTerm, lastInput, error;
 double outMin, outMax;
-const int PI_PIN_1 = 1;
-const int PI_PIN_3 = 2;
-const int PI_PIN_4 = 3;
-const int PI_PIN_5 = 4;
+const int PI_PIN_1 		= 1;
+const int PI_PIN_3 		= 2;
+const int PI_PIN_4 		= 3;
+const int PI_PIN_5 		= 4;
+const int SERVO_PIN_9 	= 9;
+const int SERVO_PIN_10 	= 10;
 
 // Minimum and maximum angles for each motor
 const double maxAngle[6] = {90, 90, 90, 90, 90, 90};
@@ -47,7 +49,7 @@ const double minAngle[6] = {0 , 0 , 0 , 0 , 0 , 0};
 const double PI_THRESHOLD = 60.0;
 
 // Ratio of angles per tooth. Can be calculated by dividing 360 by the total number of teeth. If PI has different number of teeth, a multiple must be initialized
-const double RATIO_ANGLES_PER_TOOTH = 1.8; 
+const double RATIO_ANGLES_PER_TOOTH = 1.8;
 
 // The following booleans indicate whether a tooth is passing through the PI
 bool PI1move = false;
@@ -68,6 +70,9 @@ double motorAngle[6] = {0, 0, 0, 0, 0, 0};
 int steps;
 int i;
 
+// for testing
+int destinationAngle = 0;
+
 /////////////////////////////////////////////////////////////
 //////////////////////////VOID SETUP//////////////////////////
 /////////////////////////////////////////////////////////////
@@ -76,20 +81,20 @@ void setup() {
   Serial.begin(9600); // Set up serial library at 9600 bps
   
   // Initializes the motor shields with the default frequency of 1.6KHz
-  motorShield1.begin();
-  motorShield2.begin(); 
+  //motorShield1.begin();
+  //motorShield2.begin(); 
   
   // Sets speeds for motors 
   //TODO: Optimize with some quick maths
-  motor1->setSpeed(150);
-  motor2->setSpeed(150);
-  motor2->run(RELEASE);
-  motor3->setSpeed(150);
-  motor4->setSpeed(150);
+  //motor1->setSpeed(150);
+  //motor2->setSpeed(150);
+  //motor2->run(RELEASE);
+  //motor3->setSpeed(150);
+  //motor4->setSpeed(150);
 
   // Attach servo motors
-  motor5.attach(10);
-  motor6.attach(9);
+  motor5.attach(SERVO_PIN_10);
+  motor6.attach(SERVO_PIN_9);
 }
 
 /////////////////////////////////////////////////////////////
@@ -106,7 +111,7 @@ void loop() {
   // PI status checks
   if (PIval1 < PI_THRESHOLD && !PI1move) { // in plain english, if (we detect that the motor is moving)
     PI1move = true; 
-    Serial.println("Photo interrupter 1 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
+//    Serial.println("Photo interrupter 1 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
     if (motorCommandAngle[0] - motorAngle[0] < 0) {
       encoderDistance[0] -= RATIO_ANGLES_PER_TOOTH;
       isRotatingCW = true;
@@ -121,7 +126,7 @@ void loop() {
   
   if (PIval3 < PI_THRESHOLD && !PI3move) {
     PI3move = true; 
-    Serial.println("Photo interrupter 3 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
+//    Serial.println("Photo interrupter 3 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
     if (motorCommandAngle[2] - motorAngle[2] < 0) {
       encoderDistance[2] -= RATIO_ANGLES_PER_TOOTH;
       isRotatingCW = true;
@@ -136,7 +141,7 @@ void loop() {
   
   if (PIval4 < PI_THRESHOLD && !PI4move) {
     PI4move = true; 
-    Serial.println("Photo interrupter 4 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
+//    Serial.println("Photo interrupter 4 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
     if (motorCommandAngle[3] - motorAngle[3] < 0) {
       encoderDistance[3] -= RATIO_ANGLES_PER_TOOTH;
       isRotatingCW = true;
@@ -151,7 +156,7 @@ void loop() {
   
   if (PIval5 < PI_THRESHOLD && !PI5move) {
     PI5move = true; 
-    Serial.println("Photo interrupter 5 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
+//    Serial.println("Photo interrupter 5 has detected movement. A distance of 1.8 degrees is assumed to be traveled"); // 1.8 to be changed once PIs are installed
     if (motorCommandAngle[4] - motorAngle[4] < 0) {
       encoderDistance[4] -= RATIO_ANGLES_PER_TOOTH;
       isRotatingCW = true;
@@ -171,31 +176,31 @@ void loop() {
   for (i = 0; i <= 5; i++) {
     // Verify motor position with encoder position
     if ((int)encoderDistance[i] != (int)motorAngle[i] && i != 5) {
-      Serial.print("ERROR: Motor ");
-      Serial.print(i);
-      Serial.println(" has discrepancies in position sensing. Calibrating to use encoder data.");
-      Serial.print("Encoder distance: ");
-      Serial.println((int)encoderDistance[i]);
-      Serial.print("Motor distance: ");
-      Serial.println((int)motorAngle[i]);
+//      Serial.print("ERROR: Motor ");
+//      Serial.print(i);
+//      Serial.println(" has discrepancies in position sensing. Calibrating to use encoder data.");
+//      Serial.print("Encoder distance: ");
+//      Serial.println((int)encoderDistance[i]);
+//      Serial.print("Motor distance: ");
+//      Serial.println((int)motorAngle[i]);
       motorAngle[i] = encoderDistance[i];
     }
     // Verify stepper motor command is in range
     if (motorCommandAngle[i] > maxAngle[i] || motorCommandAngle[i] < minAngle[i]) {
-      Serial.println("Error: Requested angle is not within bounds");
-      Serial.print("Motor #");
-      Serial.println(i+1);
-      Serial.print(" angle: ");
-      Serial.println(motorCommandAngle[i]);
+//      Serial.println("Error: Requested angle is not within bounds");
+//      Serial.print("Motor #");
+//      Serial.println(i+1);
+//      Serial.print(" angle: ");
+//      Serial.println(motorCommandAngle[i]);
     } else {
       // compute output and move motor 2
       compute(1);
       if (output < 0) {
-        motor2->setSpeed(-output);
-        motor2->run(BACKWARD);
+        //motor2->setSpeed(-output);
+        //motor2->run(BACKWARD);
       } else {
-        motor2->setSpeed(output);
-        motor2->run(FORWARD);
+        //motor2->setSpeed(output);
+        //motor2->run(FORWARD);
       }
       // compute output and move motor 5
       compute(4);
@@ -207,15 +212,15 @@ void loop() {
 
       switch (i) {
       case 0:
-        motor1->step(steps, BACKWARD, SINGLE);
+        //motor1->step(steps, BACKWARD, SINGLE);
         motorAngle[0] += steps;
         break;
       case 2:
-        motor3->step(steps, FORWARD, SINGLE);
+        //motor3->step(steps, FORWARD, SINGLE);
         motorAngle[2] += steps;
         break;
       case 3:
-        motor4->step(steps, FORWARD, SINGLE);
+        //motor4->step(steps, FORWARD, SINGLE);
         motorAngle[3] += steps;
         break;
       case 5: // Move finger servo motor
@@ -227,7 +232,23 @@ void loop() {
 
   //TODO: synchronize this with the frequency of serial reads being done from the GUI
   // consider the average time it takes for all the code above to execute
-  delay(50); // Delay between each loop. Could optimize depending on requirements
+  // moving the motors to change the angles
+  if (destinationAngle < 180) {
+    destinationAngle++;
+  } else {
+    destinationAngle = 0;
+  }
+  
+  motorCommandAngle[4] = destinationAngle;
+  motorCommandAngle[5] = destinationAngle;
+  
+  String outputStr = "dead,dead,dead,dead,alive,alive;-,-,-,-,";
+  outputStr.concat(motorCommandAngle[4]);
+  outputStr.concat(",");
+  outputStr.concat(motorCommandAngle[5]);
+  outputStr.concat(";-,-,-,-,-,-");
+  Serial.println(outputStr);
+  delay(1000); // Delay between each loop. Could optimize depending on requirements
 }
 
 
@@ -277,7 +298,7 @@ void setTunings(int i, double Kp, double Ki, double Kd) {
 // helper function to set min/max angles
 void setOutputLimits(double Min, double Max) {
    if (Min > Max) {
-    Serial.println("ERROR: Controller output makes no sense. Min cannot be greater than Max.");
+//    Serial.println("ERROR: Controller output makes no sense. Min cannot be greater than Max.");
     return;
    }
    
