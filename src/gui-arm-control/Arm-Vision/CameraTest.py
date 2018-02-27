@@ -1,6 +1,21 @@
 """
-Go to https://www.learnopencv.com/install-opencv3-on-ubuntu/
+Go to https://www.pyimagesearch.com/2016/10/24/ubuntu-16-04-hot-to-install-opencv/
 for instructions on how to install the openCV library on Ubuntu.
+Note that if you are using a version of ubuntu newer than 16.04 you may run into a few minor
+issues while trying to install dependencies.
+
+Issues encountered so far and potential fixes (that worked for me):
+1. libpng-12-dev:
+- sudo apt-get install libpng-dev
+
+2. libjapser-dev:
+- sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+- sudo apt update
+- sudo apt install libjasper1 libjasper-dev
+
+3. libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+- skipping this step
+
 Go to http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_setup/py_setup_in_windows/py_setup_in_windows.html
 to install openCV library on windows
 """
