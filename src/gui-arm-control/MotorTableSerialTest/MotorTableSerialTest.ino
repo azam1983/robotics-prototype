@@ -16,7 +16,7 @@ void loop() {
     if (i < 6) {
       str.concat("unknown");
     } else if (i < 12) {
-;     randomNumber = random(180);
+      randomNumber = random(180);
       str.concat(randomNumber);
     } else {
       randomNumber = random(13);
