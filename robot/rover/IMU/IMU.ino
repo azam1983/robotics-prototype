@@ -132,6 +132,7 @@ void loop(){
     Serial.print(acc_pitch_angle);
     Serial.print(",");
     Serial.print(acc_roll_angle);
+    Serial.print(",");
     // Serial.println();
 
   // Gyro Values
@@ -141,85 +142,11 @@ void loop(){
    Serial.print(",");
    Serial.print(gyro_yaw_angle);
    Serial.println();
-
-  // KALMAN filtered
-   // applyKalmanFilter();
-
-  // Averaged Values or Kalman Filtered
-
  
   delay(50); //Just here to slow down the serial to make it more readable
 
   // Calculate dt
   calculateChangeInTime(true);
-}
-
-void applyKalmanFilter(){
-  // Initial State
-    // Initial conditions
-      float d_init = ; // Initial angular position
-      float w_init = ; // Initial angular velocity
-      calculateChangeInTime(false);
-      int delta_t = dt; // Change in time
-
-    // Initial covariance matrix
-      // Initial process errors
-      float err_delta_d = ; // Error in angular position
-      float err_delta_w = ; // Error in angular velocity
-
-      // Variance for angular position
-      float variance_d = err_delta_d * err_delta_d;
-      // Variance for angular velocity
-      float variance_w = err_delta_w * err_delta_w;
-      // Covariance for angular position and angular velocity
-      float covariance_d_w_init = err_delta_d * err_delta_w;
-
-      // Covariance matrix:
-      // m n
-      // 1 1 = variance for angular position
-      // 1 2 = covariance for angular position and angular velocity
-      // 2 1 = covariance for angular position and angular velocity
-      // 2 2 = variance for angular velocity
-      float error_in_est_init[2][2] =
-      {
-        {variance_d, covariance_d_w},
-        {covariance_d_w, variance_w}
-      };
-
-  // Previous State = initial state
-    // Previous conditions
-      float conditions_prev[2][1] =
-      {
-        {d_init},
-        {w_init}
-      };
-    // Previous process error
-      float covariance_matrix_d_w_prev = covariance_d_w_init;
-
-  // New Predicted State
-    // Predict new conditions
-      float predicted_state_matrix[2][1];
-      // update matrices
-      float a_matrix[2][2] =
-      {
-        {1, dt},
-        {0, 1 }
-      };
-      // Compute prediction
-      predicted_state_matrix a_matrix[0] = a_matrix[0] * conditions_prev[0] + a_matrix[1] * conditions_prev[1];
-      predicted_state_matrix a_matrix[1] = a_matrix[2] * conditions_prev[0] + a_matrix[3] * conditions_prev[1];
-    // Compute the prediction's covariance matrix
-      float prediction_process_covariance_matrix[2][2];
-      // find transpose of A matrix
-      
-
-  // Update with new Measurement
-
-  // Calculate the Kalman Gain
-
-  // Calculate the new State
-
-  // Current state becomes the previous state
 }
 
 // This routine takes both the accelerometer readings and the gyro readings to create a weighted average reading as per the specified weights declares above
@@ -267,8 +194,7 @@ void calibrateAccelerometer(){
     convertAccelerometerValuesToAngle();                                          
     acc_x_cal += acc_pitch_angle;                                          
     acc_y_cal += acc_roll_angle;                                          
-    acc_z_cal += acc_yaw_angle;                                          
-    delay(3);                                                          
+    acc_z_cal += acc_yaw_angle;                                                                                          
   }
   acc_x_cal /= 2000;
   acc_y_cal /= 2000;
