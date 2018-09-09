@@ -129,35 +129,23 @@ void loop(){
   applyWeigthedAverage(simple_w_avg);
 
   // Accelerometer Values
-//  Serial.print(acc_pitch_angle);
-//  Serial.print(",");
-//  Serial.print(acc_roll_angle);
-//  Serial.println();
+    Serial.print(acc_pitch_angle);
+    Serial.print(",");
+    Serial.print(acc_roll_angle);
+    // Serial.println();
 
   // Gyro Values
-//  Serial.print(gyro_pitch_angle);
-//  Serial.print(",");
-//  Serial.print(gyro_roll_angle);
-//  Serial.print(",");
-//  Serial.print(gyro_yaw_angle);
-//  Serial.println();
-
-Serial.print(acc_pitch_angle);
-Serial.print(",");
-
-Serial.print(gyro_pitch_angle);
-Serial.print(",");
-
-Serial.print(angle_pitch);
+   Serial.print(gyro_pitch_angle);
+   Serial.print(",");
+   Serial.print(gyro_roll_angle);
+   Serial.print(",");
+   Serial.print(gyro_yaw_angle);
+   Serial.println();
 
   // KALMAN filtered
-   applyKalmanFilter();
+   // applyKalmanFilter();
 
   // Averaged Values or Kalman Filtered
-//  Serial.print(acc_pitch_angle);
-//  Serial.print(",");
-//  Serial.print(angle_roll);
-  Serial.println();
 
  
   delay(50); //Just here to slow down the serial to make it more readable
