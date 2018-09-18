@@ -26,13 +26,24 @@
         crossorigin="anonymous" async></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
         crossorigin="anonymous" async></script>
+
+
+    <!-- ROS embed section -->
+    <script src="https://static.robotwebtools.org/threejs/r88/three.min.js" async></script>
+    <script src="https://static.robotwebtools.org/threejs/r88/ColladaLoader.js" async></script>
+    <script src="https://static.robotwebtools.org/threejs/r88/STLLoader.js" async></script>
+    <script src="https://static.robotwebtools.org/EventEmitter2/0.4.14/eventemitter2.min.js" async></script>
+    <script src="https://static.robotwebtools.org/roslibjs/0.20.0/roslib.min.js" async></script>
+    <script src="https://static.robotwebtools.org/ros3djs/current/ros3d.min.js" async></script>
+    <script src="../static/js/ros_model.js" async></script>
+
 </head>
 
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" style="margin-bottom: 120px">
         <a class="navbar-brand" href="#">
-            <img src="https://spaceconcordia.github.io/img/sclogo_header.png">
-        </a>
+            <img src="http://spaceconcordia.github.io/img/sclogo_header.png">
+	</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" d ata-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -60,8 +71,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <h5 class="container-header">Arm Postion</h5>
-                    <img src="http://hajer.info/wp-content/uploads/2018/01/welpaper-lovely-3d-hd-wallpapers-of-welpaper.jpg" class="img-fluid"
-                    />
+                    <!--img src="http://hajer.info/wp-content/uploads/2018/01/welpaper-lovely-3d-hd-wallpapers-of-welpaper.jpg" class="img-fluid"
+                    / -->
+                    <div id="urdf" style="border: 2px solid yellow; height:300px"></div>
                 </div>
                 <div class="col-md-6">
                     <h5 class="container-header">Arm Vision</h5>
