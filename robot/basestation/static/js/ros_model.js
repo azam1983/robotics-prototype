@@ -1,7 +1,7 @@
 /**
    * Setup all visualization elements when the page is loaded.
    */
-  function init() {
+  function initR() {
     // Connect to ROS.
     var ros = new ROSLIB.Ros({
       url : 'ws://localhost:9090'
@@ -10,8 +10,8 @@
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
       divID : 'urdf',
-      width : 800,
-      height : 600,
+      width : 610,
+      height : 345,
       antialias : true
     });
 
