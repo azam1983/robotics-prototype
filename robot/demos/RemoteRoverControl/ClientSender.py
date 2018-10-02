@@ -54,7 +54,7 @@ def getMyIP():
             print("line: " + line)
             myIpAddress = re.findall(r'\d+\.\d+\.\d+\.\d+', line)[0]
 
-    return myIpAddress
+    return "127.0.0.1"
 
 PORT_NUMBER = 5000
 SIZE = 1024
@@ -108,7 +108,7 @@ clientIP = "ip:" + getMyIP() # format -> ip:192.168.2.13
 while True:
     try:
         print("Attempting to send: \"" + clientIP + "\" ...")
-        mySocket.sendto(str.encode(clientIP), (SERVER_IP, PORT_NUMBER))
+        mySocket.sendto(str.encode(clientIP), (SERVER_IP, PORT_NUMBER + 1))
         print("IP address sent\n")
         #time.sleep(1)
 
@@ -138,14 +138,14 @@ while True:
             #print("waited {} milliseconds to move".format(currentMillis() - lastCmdSent))
             if key == 'w':
                 print("Sending key: " + key)
-                mySocket.sendto(str.encode(key), (SERVER_IP, PORT_NUMBER))
+                mySocket.sendto(str.encode(key), (SERVER_IP, PORT_NUMBER + 1))
                 lastCmdSent = currentMillis()
             elif key == 's':
                 print("Sending key: " + key)
-                mySocket.sendto(str.encode(key), (SERVER_IP, PORT_NUMBER))
+                mySocket.sendto(str.encode(key), (SERVER_IP, PORT_NUMBER + 1))
                 lastCmdSent = currentMillis()
             elif key == 'q':
-                mySocket.sendto(str.encode(key), (SERVER_IP, PORT_NUMBER))
+                mySocket.sendto(str.encode(key), (SERVER_IP, PORT_NUMBER + 1))
                 print("\nTerminating connection.")
                 #print("Resetting delay rate back to {} and refresh rate back to {}".format(originalDelay, originalRefresh))
                 setX(originalDelay, originalRefresh)

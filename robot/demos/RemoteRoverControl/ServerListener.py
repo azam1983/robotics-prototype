@@ -26,7 +26,7 @@ elif len(sys.argv) >= 3:
 
 hostName = gethostbyname('0.0.0.0')
 mySocket = socket(AF_INET, SOCK_DGRAM)
-mySocket.bind((hostName, PORT_NUMBER))
+mySocket.bind((hostName, PORT_NUMBER + 1))
 #TcpSocket = socket(AF_INET, SOCK_STREAM)
 
 # set up connection to arduino
