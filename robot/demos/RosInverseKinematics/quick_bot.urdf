@@ -1,0 +1,13 @@
+<!-- this is a robot with the name myfirst, that contains only one link (a.k.a. part), 
+     whose visual component is just a cylinder 0.6 meters long with a 0.2 meter radius -->
+
+<?xml version="1.0"?>
+<robot name="myfirst">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.6" radius="0.2"/>
+      </geometry>
+    </visual>
+  </link>
+</robot>
